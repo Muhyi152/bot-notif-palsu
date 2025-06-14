@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Pesanan Masuk</title>
+</head>
+<body>
+  <h2>🔔 Aktifkan Notifikasi Pesanan!</h2>
+  <button onclick="mintaIzin()">Izinkan Notifikasi</button>
+
+  <script>
+    // Daftarkan service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+
+    function mintaIzin() {
+      Notification.requestPermission().then(permission => {
+        if (permission === "granted") {
+          new Notification("✅ Notifikasi Aktif", {
+            body: "Kamu akan menerima update pesanan seperti Shopee/Tokopedia!",
+            icon: "https://img.icons8.com/color/96/000000/ok--v1.png"
+          });
+
+          // Simulasi kirim notifikasi setiap 15 detik
+          setInterval(() => {
+            const pesan = [
+              '🛍️ [Shopee] Pesanan #1203 berhasil dibayar!',
+              '📦 [Tokopedia] Order #TKP282 dikemas.',
+              '✅ Pembayaran Shopee #8889 sukses!',
+              '🚚 Kurir menuju lokasi kamu...'
+            ];
+            const acak = pesan[Math.floor(Math.random() * pesan.length)];
+
+            navigator.serviceWorker.getRegistration().then(reg => {
+              if (reg) {
+                reg.showNotification("📢 Update Pesanan", {
+                  body: acak,
+                  icon: "https://img.icons8.com/color/96/000000/shopping-cart.png"
+                });
+              }
+            });
+          }, 15000);
+        } else {
+          alert("Kamu harus klik Izinkan dulu untuk mulai.");
+        }
+      });
+    }
+  </script>
+</body>
+</html>
